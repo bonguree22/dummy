@@ -1,2 +1,2 @@
 # dummy
-python dummy.py
+python dummy.py --batch_size 8
