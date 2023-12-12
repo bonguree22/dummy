@@ -5,9 +5,9 @@ import time
 from collections import deque
 
 class HyperParameters():
-    def __init__(self):
+    def __init__(self, batch_size=2):
         print("\n---[ HyperParameters ]---")
-        self.B = 8
+        self.B = batch_size
         self.C = 3
         self.H = 224
         self.W = 224
@@ -16,13 +16,11 @@ class HyperParameters():
         
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         
-        
-        
-        
         self.lr = 1e-7
         self.wd = 1e-10
         
-        print("shape:", self.C, self.H, self.W)
+        print("batch size:", self.B)
+        print("input shape:", self.C, self.H, self.W)
         print("device:", self.device)
 
 
@@ -173,14 +171,23 @@ def train(HP, LC_train, AMPT):
 
 
 if __name__ == "__main__":
+    import argparse
+    parser_options = argparse.ArgumentParser(description='_options')
+    parser_options.add_argument("--batch_size", type = int, default = 2,     help = "batch_size")
+    args_options = parser_options.parse_args()
+    
     LC_main = LoopCounter()
     flag_exit_init = -9
     flag_exit = flag_exit_init
     
+    HP = HyperParameters(args_options.batch_size)
+    AMPT = AutomaticMixedPrecisionTool()
     # train(HP = HyperParameters()
          # ,LC_train = LoopCounter()
          # ,AMPT = AutomaticMixedPrecisionTool()
          # )
+    
+    
     
     while True:
         LC_main.count()
@@ -189,9 +196,9 @@ if __name__ == "__main__":
         try:
             time.sleep(1)
             flag_exit = -9
-            train(HP = HyperParameters()
+            train(HP = HP
                  ,LC_train = LoopCounter()
-                 ,AMPT = AutomaticMixedPrecisionTool()
+                 ,AMPT = AMPT
                  )
             
         except:
